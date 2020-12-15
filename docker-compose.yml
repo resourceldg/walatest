@@ -1,0 +1,82 @@
+version: '3'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+    networks:
+      proxy-net:
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes: 
+      - ./certs:/etc/nginx/certs:rw
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+  broker:
+    image: eclipse-mosquitto:1.6.10
+    volumes:
+      - ./config:/mosquitto/config/
+    ports:
+      - '8883:8883'
+    networks:
+      - localnet
+      - proxy-net
+    restart: unless-stopped
+
+  node-red:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    user: "1000"
+    expose:
+      - 1880
+    environment:
+      - VIRTUAL_HOST=walatic.com,www.walatic.com
+      - VIRTUAL_PORT=1880
+      - LETSENCRYPT_HOST=walatic.com,www.walatic.com
+      - LETSENCRYPT_EMAIL=dardofe@gmail.com
+      - NODE_RED_ENABLE_SAFE_MODE=false
+    volumes:
+      - ~/node-red-data:/data
+    networks:
+      - localnet
+
+  database:
+    image: "postgres" # use latest official postgres version
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data e$
+
+networks:
+  proxy-net:
+  localnet:
+
+volumes:
+  certs:
+  html:
+  vhostd:
+  database-data:
+  node-red-data:
+
+
+
+
+
