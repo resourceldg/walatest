@@ -30,7 +30,7 @@ services:
 
   node-red:
     depends_on:
-      letsencrypt:
+      - letsencrypt
     build: 
       context: .
       dockerfile: ./Dockerfile
