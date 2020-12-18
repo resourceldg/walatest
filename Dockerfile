@@ -12,8 +12,7 @@ COPY settings.js /data/settings.js
 COPY flows_cred.json /data/flows_linux_cred.json
 COPY flows.json /data/flows.json
 
-
-
+RUN npm start
 # You should add extra nodes via your package.json file but you can also add them here:
 #WORKDIR /usr/src/node-red
 #RUN npm install node-red-node-smooth
