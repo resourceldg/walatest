@@ -35,7 +35,6 @@ services:
     ports:
       - '8883:8883'
     networks:
-      - localnet
       - proxy-net
     restart: unless-stopped
 
@@ -52,11 +51,10 @@ services:
       - VIRTUAL_PORT=1880
       - LETSENCRYPT_HOST=walatic.com,www.walatic.com
       - LETSENCRYPT_EMAIL=dardofe@gmail.com
-      - NODE_RED_ENABLE_SAFE_MODE=false
     volumes:
       - ~/node-red-data:/data
     networks:
-      - localnet
+      - proxy-net
 
   database:
     image: "postgres" # use latest official postgres version
@@ -67,7 +65,6 @@ services:
 
 networks:
   proxy-net:
-  localnet:
 
 volumes:
   certs:
@@ -75,6 +72,7 @@ volumes:
   vhostd:
   database-data:
   node-red-data:
+  config:
 
 
 
