@@ -1,7 +1,6 @@
 FROM nodered/node-red:1.2.6-12-minimal-amd64
 
 # Copy package.json to the WORKDIR so npm builds all
-# of your added nodes modules for Node-RED
 COPY package.json .
 RUN npm install --unsafe-perm --no-update-notifier --no-fund --only=production
 
@@ -10,9 +9,9 @@ RUN npm install --unsafe-perm --no-update-notifier --no-fund --only=production
 #       If you need to use an external volume for persistence then
 #       copy your settings and flows files to that volume instead.
 COPY settings.js /data/settings.js
-COPY flows_linux_cred.json /data/flows_linux_cred.json
-COPY flows_wardix_ubuntu_cred.json /data/flows_wardix_ubuntu_cred.json
-COPY flows_wardix_ubuntu.json /data/flows_wardix_ubuntu.json
+COPY flows_cred.json /data/flows_linux_cred.json
+COPY flows.json /data/flows.json
+
 
 
 # You should add extra nodes via your package.json file but you can also add them here:
