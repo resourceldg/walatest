@@ -1,7 +1,7 @@
 FROM nodered/node-red:1.2.6-12-minimal-amd64
 
 # Copy package.json to the WORKDIR so npm builds all
-COPY package.json .
+
 RUN npm install --unsafe-perm --no-update-notifier --no-fund --only=production
 
 # Copy _your_ Node-RED project files into place
@@ -12,7 +12,6 @@ COPY settings.js /data/settings.js
 COPY flows_cred.json /data/flows_linux_cred.json
 COPY flows.json /data/flows.json
 
-RUN npm start
 # You should add extra nodes via your package.json file but you can also add them here:
 #WORKDIR /usr/src/node-red
 #RUN npm install node-red-node-smooth
